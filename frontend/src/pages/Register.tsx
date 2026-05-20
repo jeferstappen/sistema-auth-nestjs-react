@@ -3,57 +3,69 @@ import { api } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 export function Register() {
-  const [formData, setFormData] = useState({
-    firstName: '', lastName: '', username: '', email: '', password: '', confirmPassword: ''
-  });
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
   const navigate = useNavigate();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (formData.password !== formData.confirmPassword) {
-      return setError('As senhas não coincidem!');
-    }
-
     try {
-      const { confirmPassword, ...dataToSend } = formData;
+     
+      await api.post('/users', { username, email, password, firstName, lastName });
       
-      await api.post('/users', dataToSend);
+      alert('Usuário cadastrado com sucesso! Verifique o Mailtrap para obter o código de verificação.');
       
-      alert('Cadastro realizado com sucesso! Verifique seu e-mail para ativar a conta (olhe o Mailtrap).');
-      navigate('/'); 
-      
+      navigate('/ativar'); 
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao cadastrar.');
+      setError(err.response?.data?.message || 'Erro ao realizar o cadastro.');
     }
   };
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '400px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center' }}>Novo Cadastro</h1>
+      <h1 style={{ textAlign: 'center' }}>Portal Verstappen - Cadastro</h1>
 
       <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        
         {error && (
-          <div style={{ backgroundColor: '#ffcccc', color: '#cc0000', padding: '0.5rem', borderRadius: '4px', textAlign: 'center' }}>
+          <div style={{ backgroundColor: '#ffcccc', color: '#cc0000', padding: '0.5rem', borderRadius: '4px', textAlign: 'center', fontWeight: 'bold' }}>
             {error}
           </div>
         )}
 
-        <input type="text" name="firstName" placeholder="Nome" onChange={handleChange} required style={{ padding: '0.5rem' }} />
-        <input type="text" name="lastName" placeholder="Sobrenome" onChange={handleChange} required style={{ padding: '0.5rem' }} />
-        <input type="text" name="username" placeholder="Nome de usuário" onChange={handleChange} required style={{ padding: '0.5rem' }} />
-        <input type="email" name="email" placeholder="E-mail" onChange={handleChange} required style={{ padding: '0.5rem' }} />
-        <input type="password" name="password" placeholder="Senha" onChange={handleChange} required style={{ padding: '0.5rem' }} />
-        <input type="password" name="confirmPassword" placeholder="Confirme a Senha" onChange={handleChange} required style={{ padding: '0.5rem' }} />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label>Nome:</label>
+          <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required style={{ padding: '0.5rem', marginTop: '0.25rem', borderRadius: '4px', border: '1px solid #555' }} />
+        </div>
 
-        <button type="submit" style={{ padding: '0.75rem', backgroundColor: '#28a745', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label>Sobrenome:</label>
+          <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required style={{ padding: '0.5rem', marginTop: '0.25rem', borderRadius: '4px', border: '1px solid #555' }} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label>Nome de Usuário (Username):</label>
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required style={{ padding: '0.5rem', marginTop: '0.25rem', borderRadius: '4px', border: '1px solid #555' }} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label>E-mail:</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ padding: '0.5rem', marginTop: '0.25rem', borderRadius: '4px', border: '1px solid #555' }} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label>Senha:</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ padding: '0.5rem', marginTop: '0.25rem', borderRadius: '4px', border: '1px solid #555' }} />
+        </div>
+
+        <button type="submit" style={{ padding: '0.75rem', cursor: 'pointer', backgroundColor: '#cc0000', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', marginTop: '1rem' }}>
           Cadastrar
         </button>
       </form>

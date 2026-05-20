@@ -1,21 +1,35 @@
 import { useState } from 'react';
 import { api } from '../services/api';
-import { Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  
+  const navigate = useNavigate(); 
 
-  const handleLogin = async (e: React.FormEvent) => {
+const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
       const response = await api.post('/auth/login', { email, password });
       const token = response.data.access_token;
+      
+      if (!token) {
+        alert('Erro: O servidor não retornou um token de acesso válido!');
+        return;
+      }
+
       localStorage.setItem('access_token', token);
-      alert('Login realizado com sucesso! Token guardado.');
+      
+      // Alerta de sucesso restabelecido para diagnóstico
+      alert('Login realizado com sucesso! Token armazenado no navegador.');
+      
+      // Força o redirecionamento para a Home
+      navigate('/'); 
+      
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erro ao conectar com o servidor.');
     }
@@ -23,7 +37,7 @@ export function Login() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '400px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center' }}>Portal Auth - Login</h1>
+      <h1 style={{ textAlign: 'center' }}>Portal Verstappen - Login</h1>
 
       <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         
@@ -53,16 +67,9 @@ export function Login() {
             required
             style={{ padding: '0.5rem', marginTop: '0.25rem', borderRadius: '4px', border: '1px solid #555' }}
           />
-          {/* AQUI ESTÁ A MÁGICA DO LINK */}
           <Link 
             to="/esqueci-senha" 
-            style={{ 
-              color: '#cc0000', 
-              marginTop: '0.5rem', 
-              fontSize: '14px', 
-              textDecoration: 'none', 
-              alignSelf: 'flex-end' 
-            }}
+            style={{ color: '#cc0000', marginTop: '0.5rem', fontSize: '14px', textDecoration: 'none', alignSelf: 'flex-end' }}
           >
             Esqueci minha senha?
           </Link>

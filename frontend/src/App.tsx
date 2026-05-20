@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
+import { ActivateAccount } from './pages/ActivateAccount'; // <-- Importada a nova página
 
 export function App() {
   return (
@@ -16,14 +18,16 @@ export function App() {
         marginBottom: '3rem',
         boxShadow: '0px 4px 10px rgba(0,0,0,0.5)' 
       }}>
-        <Link to="/" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Login</Link>
+        <Link to="/" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Início</Link>
+        <Link to="/login" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Login</Link>
         <Link to="/cadastro" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Cadastrar</Link>
-        {}
       </nav>
 
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Register />} />
+        <Route path="/ativar" element={<ActivateAccount />} /> {/* <-- Nova Rota */}
         <Route path="/esqueci-senha" element={<ForgotPassword />} />
         <Route path="/redefinir-senha" element={<ResetPassword />} />
       </Routes>
