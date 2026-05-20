@@ -86,7 +86,7 @@ export class UsersService {
     return token;
   }
 
-  async resetPassword(token: string, newPassword: string) {
+ async resetPassword(token: string, newPassword: string) {
     const cleanToken = token.trim();
     console.log('--- SUPER SCANNER DE DADOS ---');
     console.log('1. Token recebido do Front-end:', cleanToken);
@@ -117,5 +117,17 @@ export class UsersService {
       console.log('❌ ERRO FATAL: O token do React definitivamente NÃO É IGUAL ao que está no banco!');
       throw new BadRequestException('Token inválido ou não encontrado.');
     }
+  }
+
+  async update(id: number, updateData: any) {
+   
+    await this.usersRepository.update({ idUsuario: id } as any, updateData);
+    return { message: 'Usuário atualizado com sucesso' };
+  }
+
+  async remove(id: number) {
+    
+    await this.usersRepository.delete({ idUsuario: id } as any);
+    return { message: 'Usuário removido com sucesso' };
   }
 }

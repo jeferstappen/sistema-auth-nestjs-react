@@ -14,7 +14,6 @@ export function Home() {
     }
   }, [navigate]);
 
-  // Função para deslogar da conta
   const handleLogout = () => {
     localStorage.removeItem('access_token'); 
     navigate('/login'); 
@@ -30,7 +29,7 @@ export function Home() {
       </div>
 
       <p style={{ fontSize: '18px', marginTop: '2rem', color: '#ccc' }}>
-        Acesso Autorizado. Bem-vindo ao painel de telemetria!
+        Acesso Autorizado. Bem-vindo ao Portal Verstappen!
       </p>
       
       <div style={{ marginTop: '2rem', fontSize: '50px' }}>
