@@ -24,7 +24,6 @@ const handleLogin = async (e: React.FormEvent) => {
 
       localStorage.setItem('access_token', token);
       
-      // Alerta de sucesso restabelecido para diagnóstico
       alert('Login realizado com sucesso! Token armazenado no navegador.');
       
       // Força o redirecionamento para a Home
