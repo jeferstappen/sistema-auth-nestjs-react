@@ -5,6 +5,7 @@ import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { ActivateAccount } from './pages/ActivateAccount';
+import { UserManagement } from './pages/UserManagement'; 
 
 function NavBar() {
   const location = useLocation();
@@ -21,17 +22,18 @@ function NavBar() {
       boxShadow: '0px 4px 10px rgba(0,0,0,0.5)' 
     }}>
       {}
-      {path === '/' && (
-        <Link to="/" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Início</Link>
+      {(path === '/' || path === '/usuarios') && (
+        <>
+          <Link to="/" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Início</Link>
+          <Link to="/usuarios" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Gerenciar Usuários</Link>
+        </>
       )}
 
-      {}
-      {path !== '/' && path !== '/login' && (
+      {path !== '/' && path !== '/usuarios' && path !== '/login' && (
         <Link to="/login" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Login</Link>
       )}
 
-      {}
-      {path !== '/' && path !== '/cadastro' && (
+      {path !== '/' && path !== '/usuarios' && path !== '/cadastro' && (
         <Link to="/cadastro" style={{ color: 'black', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px' }}>Cadastrar</Link>
       )}
     </nav>
@@ -41,7 +43,6 @@ function NavBar() {
 export function App() {
   return (
     <BrowserRouter>
-      {}
       <NavBar /> 
 
       <Routes>
@@ -51,6 +52,7 @@ export function App() {
         <Route path="/ativar" element={<ActivateAccount />} />
         <Route path="/esqueci-senha" element={<ForgotPassword />} />
         <Route path="/redefinir-senha" element={<ResetPassword />} />
+        <Route path="/usuarios" element={<UserManagement />} /> {}
       </Routes>
     </BrowserRouter>
   );
