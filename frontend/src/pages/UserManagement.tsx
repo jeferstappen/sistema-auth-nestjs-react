@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../services/api';
 
 interface User {
-  id: number;
+  idUsuario: number;
   username: string;
   email: string;
   firstName: string;
@@ -13,16 +13,18 @@ export function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   
-  // Estados para o formulário de edição
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
 
-  // 1. Busca todos os usuários do back-end
   const fetchUsers = async () => {
     try {
-      const response = await api.get('/users');
+      const token = localStorage.getItem('access_token');
+      const response = await api.get('/users', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setUsers(response.data);
     } catch (err) {
+      console.error(err);
       alert('Erro ao carregar a lista de usuários.');
     }
   };
@@ -31,14 +33,17 @@ export function UserManagement() {
     fetchUsers();
   }, []);
 
-  // 2. Função para deletar um usuário
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (idUsuario: number) => {
     if (window.confirm('Tem certeza que deseja remover este piloto do grid?')) {
       try {
-        await api.delete(`/users/${id}`);
+        const token = localStorage.getItem('access_token');
+        await api.delete(`/users/${idUsuario}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         alert('Usuário excluído com sucesso!');
-        fetchUsers(); // Recarrega a lista
+        fetchUsers(); 
       } catch (err) {
+        console.error(err);
         alert('Erro ao excluir o usuário.');
       }
     }
@@ -55,11 +60,17 @@ export function UserManagement() {
     if (!editingUser) return;
 
     try {
-      await api.patch(`/users/${editingUser.id}`, { firstName, lastName });
+      const token = localStorage.getItem('access_token');
+      await api.patch(`/users/${editingUser.idUsuario}`, 
+        { firstName, lastName },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
       alert('Usuário atualizado com sucesso!');
       setEditingUser(null); 
       fetchUsers(); 
     } catch (err) {
+      console.error(err);
       alert('Erro ao atualizar o usuário.');
     }
   };
@@ -68,7 +79,6 @@ export function UserManagement() {
     <div style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '900px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>Gerenciamento do Grid (Usuários)</h1>
 
-      {}
       {editingUser && (
         <div style={{ backgroundColor: '#222', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #cc0000' }}>
           <h3>Editando: {editingUser.username}</h3>
@@ -87,7 +97,6 @@ export function UserManagement() {
         </div>
       )}
 
-      {}
       <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', backgroundColor: '#111', color: 'white', borderRadius: '8px', overflow: 'hidden' }}>
         <thead>
           <tr style={{ backgroundColor: '#cc0000', color: 'black' }}>
@@ -100,8 +109,8 @@ export function UserManagement() {
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id} style={{ borderBottom: '1px solid #333' }}>
-              <td style={{ padding: '1rem' }}>{user.id}</td>
+            <tr key={user.idUsuario} style={{ borderBottom: '1px solid #333' }}>
+              <td style={{ padding: '1rem' }}>{user.idUsuario}</td>
               <td style={{ padding: '1rem' }}>{`${user.firstName} ${user.lastName}`}</td>
               <td style={{ padding: '1rem' }}>{user.username}</td>
               <td style={{ padding: '1rem' }}>{user.email}</td>
@@ -113,7 +122,7 @@ export function UserManagement() {
                   Editar
                 </button>
                 <button 
-                  onClick={() => handleDelete(user.id)}
+                  onClick={() => handleDelete(user.idUsuario)}
                   style={{ padding: '0.4rem 0.8rem', backgroundColor: '#333', color: '#ff4444', border: '1px solid #ff4444', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
                 >
                   Excluir
